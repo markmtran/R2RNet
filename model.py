@@ -618,7 +618,7 @@ class R2RNet(nn.Module):
         self.DecomNet = DecomNet()
         self.DenoiseNet = DenoiseNet()
         self.RelightNet = RelightNet()
-        self.vgg = load_vgg16("./model")
+        self.vgg = None
 
     def forward(self, input_low, input_high):
 
