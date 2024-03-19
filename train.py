@@ -17,9 +17,9 @@ parser.add_argument('--patch_size', dest='patch_size', type=int, default=96,
 parser.add_argument('--lr', dest='lr', type=float, default=0.0001,
                     help='initial learning rate')
 parser.add_argument('--data_dir', dest='data_dir',
-                    default=r'/media/jianghai/9EB6799CB679759D1/Our dataset/Train/Training data',
+                    default=r'/content/data/our485/',
                     help='directory storing the training data')
-parser.add_argument('--ckpt_dir', dest='ckpt_dir', default='./ckpts/',
+parser.add_argument('--ckpt_dir', dest='ckpt_dir', default='/content/R2RNET/ckpts/',
                     help='directory for checkpoints')
 
 args = parser.parse_args()
@@ -30,17 +30,15 @@ def train(model):
     lr = args.lr * np.ones([args.epochs])
     lr[10:] = lr[0] / 10.0
 
-    train_low_data_names = glob(args.data_dir + '/Huawei/low/*.jpg') + \
-                           glob(args.data_dir + '/Nikon/low/*.jpg')
+    train_low_data_names = glob(args.data_dir + 'low/*.jpg')
 
     train_low_data_names.sort()
-    train_high_data_names = glob(args.data_dir + '/Huawei/high/*.jpg') + \
-                            glob(args.data_dir + '/Nikon/high/*.jpg') 
+    train_high_data_names = glob(args.data_dir + 'high/*.jpg')
 
     train_high_data_names.sort()
-    eval_low_data_names = glob('./data/eval/low/*.jpg')
+    eval_low_data_names = glob('/content/data/eval15/low/*.jpg')
     eval_low_data_names.sort()
-    eval_high_data_names = glob('./data/eval/high/*.jpg')
+    eval_high_data_names = glob('/content/data/eval15/high/*.jpg')
     eval_high_data_names.sort()
     assert len(train_low_data_names) == len(train_high_data_names)
     print('Number of training data: %d' % len(train_low_data_names))
