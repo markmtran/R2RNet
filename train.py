@@ -19,7 +19,7 @@ parser.add_argument('--lr', dest='lr', type=float, default=0.0001,
 parser.add_argument('--data_dir', dest='data_dir',
                     default=r'/content/data/our485/',
                     help='directory storing the training data')
-parser.add_argument('--ckpt_dir', dest='ckpt_dir', default='/content/R2RNET/ckpts/',
+parser.add_argument('--ckpt_dir', dest='ckpt_dir', default='/content/R2RNet/ckpts/',
                     help='directory for checkpoints')
 
 args = parser.parse_args()
