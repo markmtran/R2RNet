@@ -962,4 +962,4 @@ class R2RNet(nn.Module):
             # print(cat_image.shape)
             im = Image.fromarray(np.clip(cat_image * 255.0, 0, 255.0).astype('uint8'))
             filepath = res_dir + '/' + test_img_name
-            im.save(filepath[:-4] + '.jpg')
+            im.save(filepath[:-4] + '.png')
