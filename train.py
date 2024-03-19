@@ -94,7 +94,8 @@ if __name__ == '__main__':
         # Setup the CUDA env
         os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
         # Create the model
-        model = R2RNet().cuda()
+        # model = R2RNet().cuda()
+        model = R2RNet()
         # Train the model
         train(model)
     else:
