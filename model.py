@@ -89,7 +89,6 @@ def load_vgg16(model_dir):
     if not os.path.exists(model_dir):
         os.mkdir(model_dir)
     vgg = Vgg16()
-    vgg.cuda()
     vgg.load_state_dict(torch.load(os.path.join(model_dir, 'vgg16.weight')))
 
     return vgg
@@ -623,8 +622,8 @@ class R2RNet(nn.Module):
 
     def forward(self, input_low, input_high):
 
-        input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low))).cuda()
-        input_high = Variable(torch.FloatTensor(torch.from_numpy(input_high))).cuda()
+        input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low)))
+        input_high = Variable(torch.FloatTensor(torch.from_numpy(input_high)))
         # Forward DecomNet
         R_low, I_low = self.DecomNet(input_low)
         R_high, I_high = self.DecomNet(input_high)
@@ -639,11 +638,11 @@ class R2RNet(nn.Module):
         I_delta_3 = torch.cat((I_delta, I_delta, I_delta), dim=1)
 
         # DecomNet_loss
-        self.vgg_loss = compute_vgg_loss(R_low * I_low_3,  input_low).cuda() + compute_vgg_loss(R_high * I_high_3, input_high).cuda()
-        self.recon_loss_low = F.l1_loss(R_low * I_low_3, input_low).cuda()
-        self.recon_loss_high = F.l1_loss(R_high * I_high_3, input_high).cuda()
-        self.recon_loss_mutal_low = F.l1_loss(R_high * I_low_3, input_low).cuda()
-        self.recon_loss_mutal_high = F.l1_loss(R_low * I_high_3, input_high).cuda()
+        self.vgg_loss = compute_vgg_loss(R_low * I_low_3,  input_low) + compute_vgg_loss(R_high * I_high_3, input_high)
+        self.recon_loss_low = F.l1_loss(R_low * I_low_3, input_low)
+        self.recon_loss_high = F.l1_loss(R_high * I_high_3, input_high)
+        self.recon_loss_mutal_low = F.l1_loss(R_high * I_low_3, input_low)
+        self.recon_loss_mutal_high = F.l1_loss(R_low * I_high_3, input_high)
 
         self.loss_Decom = self.recon_loss_low + \
                           self.recon_loss_high + \
@@ -651,15 +650,15 @@ class R2RNet(nn.Module):
                           0.1 * self.recon_loss_mutal_high + \
                           0.1 * self.vgg_loss
         # DenoiseNet_loss
-        self.denoise_loss = F.l1_loss(denoise_R, R_high).cuda()
-        self.denoise_vgg = compute_vgg_loss(denoise_R, R_high).cuda()
+        self.denoise_loss = F.l1_loss(denoise_R, R_high)
+        self.denoise_vgg = compute_vgg_loss(denoise_R, R_high)
         self.loss_Denoise = self.denoise_loss + \
                             0.1 * self.denoise_vgg
 
         # RelightNet_loss
-        self.Relight_loss = F.l1_loss(denoise_R * I_delta_3, input_high).cuda()
-        self.Relight_vgg = compute_vgg_loss(denoise_R * I_delta_3, input_high).cuda()
-        self.fre_loss = frequency_loss(denoise_R * I_delta_3, input_high).cuda()
+        self.Relight_loss = F.l1_loss(denoise_R * I_delta_3, input_high)
+        self.Relight_vgg = compute_vgg_loss(denoise_R * I_delta_3, input_high)
+        self.fre_loss = frequency_loss(denoise_R * I_delta_3, input_high)
 
         self.loss_Relight = self.Relight_loss + 0.1 * self.Relight_vgg + 0.01 * self.fre_loss
 
@@ -670,7 +669,7 @@ class R2RNet(nn.Module):
         self.output_S = denoise_R.detach().cpu() * I_delta_3.detach().cpu()
 
     def gradient(self, input_tensor, direction):
-        self.smooth_kernel_x = torch.FloatTensor([[0, 0], [-1, 1]]).view((1, 1, 2, 2)).cuda()
+        self.smooth_kernel_x = torch.FloatTensor([[0, 0], [-1, 1]]).view((1, 1, 2, 2))
         self.smooth_kernel_y = torch.transpose(self.smooth_kernel_x, 2, 3)
 
         if direction == "x":
